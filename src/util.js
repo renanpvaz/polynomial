@@ -1,39 +1,20 @@
+const compose = (...functions) => data =>
+  functions.reduce((value, func) => func(value), data);
 
-function findFactors(val) {
-  const num = Math.abs(parseInt(val));
+const map = f => x =>
+  Array.prototype.map.call(x, f);
 
-  return Array(num).fill(1)
-    .map((n, i) => n + i).filter(n => !(num % n));
-}
+const filter = f => x =>
+  Array.prototype.map.call(x, f);
 
-function Δ(a, b = 0, c = 0) {
-  return (
-    Math.pow(b, 2) - (4 * a * c)
-  );
-}
+const lastOf = (arr) => arr[arr.length - 1];
 
-function bhaskara(a, b = 0, c = 0) {
-  const results = [
-    (-b + Math.sqrt(Δ(a, b, c))) / (2 * a),
-    (-b - Math.sqrt(Δ(a, b, c))) / (2 * a)
-  ];
+const merge = (values, indexes) => {
+  const newArr = [];
 
-  return results[0] === results[1] ? [results.shift()] : results;
-}
-
-function sanitizeExponentiations(expression) {
-  let newExpression = expression;
-  const exponentiations = expression.match(/[-0-9]+\^[-0-9]+|\([^]*\)\^[-0-9]+/g);
-
-  exponentiations.forEach(exponentiation => {
-    const [base, exponent] = exponentiation.split('^');
-    newExpression = newExpression.replace(
-      exponentiation,
-      exponent === 1 ? base : `+Math.pow(eval(${base}), ${exponent})`
-    );
+  indexes.forEach((index, i) => {
+    newArr[index] = values[i];
   });
 
-  return newExpression;
-}
-
-export { findFactors, Δ, bhaskara, sanitizeExponentiations };
+  return newArr;
+};

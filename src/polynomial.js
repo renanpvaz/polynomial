@@ -1,20 +1,3 @@
-// credits: http://stackoverflow.com/a/33015975
-function pipe (firstFn /* ...restFns */) {
-  var _ = null;
-  var _slice = Array.prototype.slice;
-  var restFns = _slice.call(arguments, 1) || [];
-
-
-  return function exec_fns() {
-    var args = _slice.call(arguments, 0, 1);
-
-    return restFns.reduce(function(acc, fn) {
-      return fn.call(_, acc);
-    }, firstFn.apply(_, args));
-  }
-}
-
-// HELPERS
 
 function findFactors(val) {
   const num = Math.abs(parseInt(val));
