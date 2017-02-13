@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { findFactors, Δ, bhaskara } from 'math-util';
+import { findFactors, Δ, bhaskara } from './math-util';
 
 describe('#findFactors()', () => {
   it('should find all three factors of 4', () => {

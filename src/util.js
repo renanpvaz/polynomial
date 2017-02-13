@@ -5,7 +5,7 @@ const map = f => x =>
   Array.prototype.map.call(x, f);
 
 const filter = f => x =>
-  Array.prototype.map.call(x, f);
+  Array.prototype.filter.call(x, f);
 
 const lastOf = (arr) => arr[arr.length - 1];
 
@@ -18,3 +18,5 @@ const merge = (values, indexes) => {
 
   return newArr;
 };
+
+export { compose, map, filter, lastOf, merge };

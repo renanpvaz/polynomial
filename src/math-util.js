@@ -1,4 +1,4 @@
-import { compose, filter, map, lastOf } from 'util.alt';
+import { compose, filter, map, lastOf } from './util';
 
 const sum = (a, b) => a + b;
 
@@ -29,7 +29,13 @@ const splitOnSigns = (expression) =>
   expression.replace(/\-|\+/g, match => `,${match}`).split(',');
 
 const findFactors = (number) =>
-  Array(Math.abs(number)).map(sum).filter(n => !(num % n));
+  compose(
+    Math.abs,
+    Array,
+    (arr) => arr.fill(1),
+    map(sum),
+    filter(n => !(number % n))
+  )(number);
 
 const Δ = (a, b = 0, c = 0) => Math.pow(b, 2) - (4 * a * c);
 
@@ -41,4 +47,16 @@ const bhaskara = (a, b = 0, c = 0) => {
   ];
 
   return roots[0] === roots[1] ? [roots.shift()] : roots;
+};
+
+export {
+  bhaskara,
+  Δ,
+  findFactors,
+  splitOnSigns,
+  hasFirstDegreeTerm,
+  hasTI,
+  getCoefficients,
+  getExplicitExpoents,
+  sum
 };
