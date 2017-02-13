@@ -83,6 +83,12 @@ const ruffini = (degree, root, ...coefficients) => {
   )(coefficients);
 };
 
+const findBinomialRoot = (terms) =>
+  pipe(
+    splitOnSigns,
+    ([a, b]) => (parseInt(b) * (-1)) / parseInt(a)
+  )(terms)
+
 export {
   bhaskara,
   Δ,
