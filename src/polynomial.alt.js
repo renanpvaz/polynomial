@@ -8,7 +8,7 @@ import {
 
 
 export default function Polynomial(entry) {
-  const roots = [];
+  let roots = [];
   const computed = merge(
     getCoefficients(entry),
     getExpoents(entry)
@@ -21,15 +21,24 @@ export default function Polynomial(entry) {
         .map((coeff, expo) => coeff * Math.pow(x, expo))
         .reduce(sum);
     },
+
     getComputed() {
       return computed;
     },
+
     findRoots() {
+      let newRoots;
+
       if (degree === 1) {
-        return findFirstDegreeRoot(monomials);
+        newRoots = [findBinomialRoot(computed)];
       } else if (degree === 2) {
-        return bhaskara(...computed.reverse());
+        newRoots = bhaskara(...computed.reverse())
+      } else if (degree > 2) {
+
       }
+
+      newRoots.forEach((root) => roots.includes(root) ? null : roots.push(root));
+      return roots;
     }
   };
 }

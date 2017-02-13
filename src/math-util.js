@@ -3,8 +3,27 @@ import { pipe, filter, map, lastOf, join, notFalsy, reverse } from './util';
 const sum = (a, b) => a + b;
 const notZero = (number) => number !== 0;
 
+const Δ = (a, b = 0, c = 0) => Math.pow(b, 2) - (4 * a * c);
+
+const bhaskara = (a, b = 0, c = 0) => {
+  const delta = Δ(a, b, c);
+  const roots = [
+    (-b + Math.sqrt(delta)) / (2 * a),
+    (-b - Math.sqrt(delta)) / (2 * a)
+  ];
+
+  return roots[0] === roots[1] ? [roots.shift()] : roots;
+};
+
+const splitOnSigns = (expression) =>
+  pipe(
+    (exp) => exp.replace(/\-|\+/g, match => `,${match}`),
+    (exp) => exp.split(','),
+    filter(notFalsy)
+  )(expression);
+
 const getExplicitExpoents = (terms) =>
-  terms.match(/\^[0-9]/g).map((m) => parseInt(m.substr(1, 1)));
+  (terms.match(/\^[0-9]/g) || []).map((m) => parseInt(m.substr(1, 1)));
 
 const getCoefficients = (terms) =>
   pipe(
@@ -26,9 +45,6 @@ const hasFirstDegreeTerm = (terms) =>
     filter(term => !term.includes('^') && term.includes('x'))
   )(terms);
 
-const splitOnSigns = (expression) =>
-  expression.replace(/\-|\+/g, match => `,${match}`).split(',');
-
 const getExpoents = (terms) =>
   pipe(
     getExplicitExpoents,
@@ -44,18 +60,6 @@ const findFactors = (number) =>
     map(sum),
     filter(n => !(number % n))
   )(number);
-
-const Δ = (a, b = 0, c = 0) => Math.pow(b, 2) - (4 * a * c);
-
-const bhaskara = (a, b = 0, c = 0) => {
-  const delta = Δ(a, b, c);
-  const roots = [
-    (-b + Math.sqrt(delta)) / (2 * a),
-    (-b - Math.sqrt(delta)) / (2 * a)
-  ];
-
-  return roots[0] === roots[1] ? [roots.shift()] : roots;
-};
 
 const toMonomial = (coeff, expo) => {
   const sign = coeff > 0 ? '+' : '';
@@ -85,13 +89,14 @@ const ruffini = (degree, root, ...coefficients) => {
 
 const findBinomialRoot = (terms) =>
   pipe(
-    splitOnSigns,
-    ([a, b]) => (parseInt(b) * (-1)) / parseInt(a)
-  )(terms)
+    reverse,
+    ([a, TI]) => (parseInt(TI) * (-1)) / parseInt(a)
+  )(terms);
 
 export {
   bhaskara,
   Δ,
+  findBinomialRoot,
   findFactors,
   splitOnSigns,
   hasFirstDegreeTerm,
