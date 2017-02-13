@@ -1,4 +1,4 @@
-const compose = (...functions) => data =>
+const pipe = (...functions) => data =>
   functions.reduce((value, func) => func(value), data);
 
 const map = f => x =>
@@ -19,4 +19,4 @@ const merge = (values, indexes) => {
   return newArr;
 };
 
-export { compose, map, filter, lastOf, merge };
+export { pipe, map, filter, lastOf, merge };

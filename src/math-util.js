@@ -1,4 +1,4 @@
-import { compose, filter, map, lastOf } from './util';
+import { pipe, filter, map, lastOf } from './util';
 
 const sum = (a, b) => a + b;
 
@@ -6,21 +6,21 @@ const getExplicitExpoents = (terms) =>
   terms.match(/\^[0-9]/g).map((m) => parseInt(m.substr(1, 1)));
 
 const getCoefficients = (terms) =>
-  compose(
+  pipe(
     splitOnSigns,
     map(term => parseInt(term)),
     map(term => isNaN(term) ? 1 : term)
   )(terms);
 
 const hasTI = (terms) =>
-  compose(
+  pipe(
     splitOnSigns,
     lastOf,
     (lastTerm) => !lastTerm.includes('x')
   )(terms);
 
 const hasFirstDegreeTerm = (terms) =>
-  compose(
+  pipe(
     splitOnSigns,
     filter(term => !term.includes('^') && term.includes('x'))
   )(terms);
@@ -29,7 +29,7 @@ const splitOnSigns = (expression) =>
   expression.replace(/\-|\+/g, match => `,${match}`).split(',');
 
 const findFactors = (number) =>
-  compose(
+  pipe(
     Math.abs,
     Array,
     (arr) => arr.fill(1),
