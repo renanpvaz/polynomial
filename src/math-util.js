@@ -68,10 +68,11 @@ const toMonomial = (coeff, expo) => {
   return `${sign}${coeff}${expo > 0 ? suffix : ''}`;
 };
 
-const ruffini = (degree, root, ...coefficients) => {
+const ruffini = (degree, root, coefficients) => {
   let columnValue = 0;
 
   return pipe(
+    reverse,
     map(
       (coeff, i) => {
         const result = i === 0 ? coeff : coeff + columnValue;

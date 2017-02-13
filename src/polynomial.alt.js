@@ -34,7 +34,7 @@ export default function Polynomial(entry) {
       } else if (degree === 2) {
         newRoots = bhaskara(...computed.reverse())
       } else if (degree > 2) {
-
+        newRoots = (Polynomial(ruffini(degree, -2, computed))).findRoots();
       }
 
       newRoots.forEach((root) => roots.includes(root) ? null : roots.push(root));
