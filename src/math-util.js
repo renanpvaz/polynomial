@@ -1,4 +1,4 @@
-import { compose, filter, map, lastOf } from 'util.alt';
+import { compose, filter, map, lastOf } from 'util';
 
 const sum = (a, b) => a + b;
 
