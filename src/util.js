@@ -7,7 +7,15 @@ const map = f => x =>
 const filter = f => x =>
   Array.prototype.filter.call(x, f);
 
+const join = str => x =>
+  Array.prototype.join.call(x, str);
+
+const reverse = x =>
+  Array.prototype.reverse.call(x);
+
 const lastOf = (arr) => arr[arr.length - 1];
+
+const notFalsy = (val) => !!val;
 
 const merge = (values, indexes) => {
   const newArr = [];
@@ -19,4 +27,4 @@ const merge = (values, indexes) => {
   return newArr;
 };
 
-export { pipe, map, filter, lastOf, merge };
+export { pipe, map, filter, lastOf, merge, join, notFalsy, reverse };
