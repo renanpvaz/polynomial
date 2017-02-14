@@ -5,15 +5,12 @@ const notZero = (number) => number !== 0;
 
 const Δ = (a, b = 0, c = 0) => Math.pow(b, 2) - (4 * a * c);
 
-const bhaskara = (a, b = 0, c = 0) => {
-  const delta = Δ(a, b, c);
-  const roots = [
-    (-b + Math.sqrt(delta)) / (2 * a),
-    (-b - Math.sqrt(delta)) / (2 * a)
-  ];
-
-  return roots[0] === roots[1] ? [roots.shift()] : roots;
-};
+const bhaskara = pipe(
+  Δ,
+  Math.sqrt,
+  (val) => [(-b + val) / (2 * a), (-b - val) / (2 * a)],
+  (roots) => roots[0] === roots[1] ? [roots.shift()] : roots
+);
 
 const splitOnSigns = pipe(
   (exp) => exp.replace(/\-|\+/g, match => `,${match}`),
