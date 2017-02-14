@@ -1,16 +1,28 @@
-import { pipe, filter, map, lastOf, join, notFalsy, reverse, Maybe, match } from './util';
+import {
+  pipe,
+  curry,
+  filter,
+  map,
+  lastOf,
+  join,
+  notFalsy,
+  reverse,
+  Maybe,
+  match,
+} from './util';
 
 const sum = (a, b) => a + b;
 const notZero = (number) => number !== 0;
 
-const Δ = (a, b = 0, c = 0) => Math.pow(b, 2) - (4 * a * c);
+const bhaskara = (a, b, c) => {
+  const delta = Math.sqrt(Math.pow(b, 2) - (4 * a * c));
+  const roots = [
+    (-b + delta) / (2 * a),
+    (-b - delta) / (2 * a)
+  ];
 
-const bhaskara = pipe(
-  Δ,
-  Math.sqrt,
-  (val) => [(-b + val) / (2 * a), (-b - val) / (2 * a)],
-  (roots) => roots[0] === roots[1] ? [roots.shift()] : roots
-);
+  return roots[0] === roots[1] ? [roots.shift()] : roots;
+};
 
 const splitOnSigns = pipe(
   (exp) => exp.replace(/\-|\+/g, match => `,${match}`),
@@ -47,12 +59,19 @@ const getExpoents = pipe(
   (expos) => [...expos, hasTI(terms) ? 0 : undefined]
 );
 
+const getIntegersUntil = pipe(
+  Math.abs,
+  Array,
+  (arr) => arr.fill(1),
+  map(sum)
+);
+
 const findFactors = pipe(
   Math.abs,
   Array,
   (arr) => arr.fill(1),
   map(sum),
-  filter(n => !(number % n))
+  filter((n, i, arr) => !(arr[arr.length - 1] % n))
 );
 
 const toMonomial = (coeff, expo) => {
@@ -61,6 +80,11 @@ const toMonomial = (coeff, expo) => {
 
   return `${sign}${coeff}${expo > 0 ? suffix : ''}`;
 };
+
+const findBinomialRoot = pipe(
+  reverse,
+  ([a, TI]) => (parseInt(TI) * (-1)) / parseInt(a)
+);
 
 const ruffini = (degree, root, coefficients) => {
   let columnValue = 0;
@@ -82,15 +106,9 @@ const ruffini = (degree, root, coefficients) => {
   )(coefficients);
 };
 
-const findBinomialRoot = (terms) =>
-  pipe(
-    reverse,
-    ([a, TI]) => (parseInt(TI) * (-1)) / parseInt(a)
-  )(terms);
 
 export {
   bhaskara,
-  Δ,
   findBinomialRoot,
   findFactors,
   splitOnSigns,

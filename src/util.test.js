@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { findFactors, Δ, bhaskara } from './math-util';
+import { findFactors, bhaskara } from './math-util';
 
 describe('#findFactors()', () => {
   it('should find all three factors of 4', () => {
@@ -18,20 +18,6 @@ describe('#findFactors()', () => {
     const selected = primes[randomIndex];
 
     expect(findFactors(selected)).to.deep.equal([1, selected]);
-  });
-});
-
-describe('#Δ()', () => {
-  it('should calculate correctly', () => {
-    expect(Δ(1, 1, 1)).to.equal(-3);
-  });
-
-  it('should use 0 as default for b and c', () => {
-    expect(Δ(1)).to.equal(0);
-  });
-
-  it('should need at least one param', () => {
-    expect(Δ()).to.be.NaN;
   });
 });
 
