@@ -1,4 +1,4 @@
-import { pipe, filter, map, lastOf, join, notFalsy, reverse } from './util';
+import { pipe, filter, map, lastOf, join, notFalsy, reverse, Maybe, match } from './util';
 
 const sum = (a, b) => a + b;
 const notZero = (number) => number !== 0;
@@ -15,51 +15,48 @@ const bhaskara = (a, b = 0, c = 0) => {
   return roots[0] === roots[1] ? [roots.shift()] : roots;
 };
 
-const splitOnSigns = (expression) =>
-  pipe(
-    (exp) => exp.replace(/\-|\+/g, match => `,${match}`),
-    (exp) => exp.split(','),
-    filter(notFalsy)
-  )(expression);
+const splitOnSigns = pipe(
+  (exp) => exp.replace(/\-|\+/g, match => `,${match}`),
+  (exp) => exp.split(','),
+  filter(notFalsy)
+);
 
-const getExplicitExpoents = (terms) =>
-  (terms.match(/\^[0-9]/g) || []).map((m) => parseInt(m.substr(1, 1)));
+const getExplicitExpoents = pipe(
+  match(/\^[0-9]/g),
+  Maybe.of,
+  map(m => parseInt(m.substr(1, 1)))
+);
 
-const getCoefficients = (terms) =>
-  pipe(
-    splitOnSigns,
-    map(term => parseInt(term)),
-    map(term => isNaN(term) ? 1 : term)
-  )(terms);
+const getCoefficients = pipe(
+  splitOnSigns,
+  map(term => parseInt(term)),
+  map(term => isNaN(term) ? 1 : term)
+);
 
-const hasTI = (terms) =>
-  pipe(
-    splitOnSigns,
-    lastOf,
-    (lastTerm) => !lastTerm.includes('x')
-  )(terms);
+const hasTI = pipe(
+  splitOnSigns,
+  lastOf,
+  (lastTerm) => !lastTerm.includes('x')
+);
 
-const hasFirstDegreeTerm = (terms) =>
-  pipe(
-    splitOnSigns,
-    filter(term => !term.includes('^') && term.includes('x'))
-  )(terms);
+const hasFirstDegreeTerm = pipe(
+  splitOnSigns,
+  filter(term => !term.includes('^') && term.includes('x'))
+);
 
-const getExpoents = (terms) =>
-  pipe(
-    getExplicitExpoents,
-    (expos) => [...expos, hasFirstDegreeTerm(terms) ? 1 : undefined],
-    (expos) => [...expos, hasTI(terms) ? 0 : undefined]
-  )(terms);
+const getExpoents = pipe(
+  getExplicitExpoents,
+  (expos) => [...expos, hasFirstDegreeTerm(terms) ? 1 : undefined],
+  (expos) => [...expos, hasTI(terms) ? 0 : undefined]
+);
 
-const findFactors = (number) =>
-  pipe(
-    Math.abs,
-    Array,
-    (arr) => arr.fill(1),
-    map(sum),
-    filter(n => !(number % n))
-  )(number);
+const findFactors = pipe(
+  Math.abs,
+  Array,
+  (arr) => arr.fill(1),
+  map(sum),
+  filter(n => !(number % n))
+);
 
 const toMonomial = (coeff, expo) => {
   const sign = coeff > 0 ? '+' : '';
