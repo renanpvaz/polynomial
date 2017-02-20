@@ -4,6 +4,8 @@ import {
   sum,
   getExpoents,
   bhaskara,
+  getNumericalValue,
+  findPossibleRoots,
 } from './math-util';
 
 
@@ -17,9 +19,7 @@ export default function Polynomial(entry) {
 
   return {
     numericalValueFor(x) {
-      return computed
-        .map((coeff, expo) => coeff * Math.pow(x, expo))
-        .reduce(sum);
+      return getNumericalValue(computed, x);
     },
 
     getComputed() {
@@ -39,6 +39,14 @@ export default function Polynomial(entry) {
 
       newRoots.forEach((root) => roots.includes(root) ? null : roots.push(root));
       return roots;
+    },
+
+    _findHigherIndexRoots() {
+      const possibleRoots = findPossibleRoots(computed[0]);
+      const root = possibleRoots.find(val => this.numericalValueFor(val) === 0);
+
+
+
     }
   };
 }

@@ -2,6 +2,7 @@ import {
   pipe,
   curry,
   filter,
+  reduce,
   map,
   lastOf,
   join,
@@ -32,7 +33,7 @@ const splitOnSigns = pipe(
 
 const getExplicitExpoents = pipe(
   match(/\^[0-9]/g),
-  Maybe.of,
+  match => match || [],
   map(m => parseInt(m.substr(1, 1)))
 );
 
@@ -53,11 +54,12 @@ const hasFirstDegreeTerm = pipe(
   filter(term => !term.includes('^') && term.includes('x'))
 );
 
-const getExpoents = pipe(
-  getExplicitExpoents,
-  (expos) => [...expos, hasFirstDegreeTerm(terms) ? 1 : undefined],
-  (expos) => [...expos, hasTI(terms) ? 0 : undefined]
-);
+const getExpoents = (terms) =>
+  pipe(
+    getExplicitExpoents,
+    (expos) => [...expos, hasFirstDegreeTerm(terms) ? 1 : undefined],
+    (expos) => [...expos, hasTI(terms) ? 0 : undefined]
+  )(terms);
 
 const getIntegersUntil = pipe(
   Math.abs,
@@ -86,7 +88,17 @@ const findBinomialRoot = pipe(
   ([a, TI]) => (parseInt(TI) * (-1)) / parseInt(a)
 );
 
-const ruffini = (degree, root, coefficients) => {
+const findPossibleRoots = pipe(
+  findFactors,
+  (factors) => [...factors, ...factors.map(f => f * (-1))]
+);
+
+const getNumericalValue = (polynomial, x) =>
+  polynomial
+    .map((coeff, expo) => coeff * Math.pow(x, expo))
+    .reduce((a, b) => a + b);
+
+const ruffini = (root, coefficients) => {
   let columnValue = 0;
 
   return pipe(
@@ -100,12 +112,9 @@ const ruffini = (degree, root, coefficients) => {
       }
     ),
     filter(notFalsy),
-    reverse,
-    map((coeff, i) => toMonomial(coeff, degree - (i + 1))),
-    join('')
+    reverse
   )(coefficients);
 };
-
 
 export {
   bhaskara,
@@ -116,5 +125,7 @@ export {
   hasTI,
   getCoefficients,
   getExplicitExpoents,
-  sum
+  sum,
+  getNumericalValue,
+  findPossibleRoots,
 };
